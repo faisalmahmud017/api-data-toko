@@ -38,15 +38,15 @@ exports.getBarangMasuk = async (req, res) => {
 };
 
 exports.insertBarangMasuk = async (req, res) => {
-  // const {id_barang,nama_barang,jenis_barang,jml_barang_masuk} = req.body;
-
-  const body = req.body;
-  let id_barang = body.id_barang;
-  let nama_barang = body.nama_barang;
-  let jenis_barang = body.jenis_barang;
-  let jml_barang_masuk = body.jml_barang_masuk;
-  let message = "";
+  
+  // const body = req.body;
+  // let id_barang = body.id_barang;
+  // let nama_barang = body.nama_barang;
+  // let jenis_barang = body.jenis_barang;
+  // let jml_barang_masuk = body.jml_barang_masuk;
   try {
+    const {id_barang,nama_barang,jenis_barang,jml_barang_masuk} = req.body;
+    let message = "";
     let sql = "INSERT INTO tb_barang_masuk (id_barang, nama_barang, jenis_barang, jml_barang_masuk) VALUES (?, ?, ?, ?)";
     let values = [id_barang, nama_barang, jenis_barang, jml_barang_masuk];
 
@@ -60,10 +60,63 @@ exports.insertBarangMasuk = async (req, res) => {
       res.json({
         status: 200,
         message: message,
-        // data: rows,
+        data: req.body,
       });
     });
   } catch (error) {
     console.log(`ERRORNYA: ${error}`);
   }
 };
+
+exports.editBarangMasuk = async(req, res) => {
+  const id = req.params.id;
+  const body = req.body;
+  let id_barang = body.id_barang;
+  let nama_barang = body.nama_barang;
+  let jenis_barang = body.jenis_barang;
+  let jml_barang_masuk = body.jml_barang_masuk;
+  let sql = `UPDATE tb_barang_masuk SET id_barang=?, nama_barang=?, jenis_barang=?, jml_barang_masuk=? WHERE id=${id}`;
+  let values = [id_barang, nama_barang, jenis_barang, jml_barang_masuk];
+  let message ='';
+
+  try {
+    Connection.query(sql, values, (err, rows, fileds) => {
+      if (err) throw err;
+      if(rows.affectedRows > 0) {
+        message = 'Data Berhasil diubah';
+      } else {
+        message = 'Data Gagal diubah';
+      }
+      res.json({
+        status: 200,
+        message: message,
+        data: req.body,
+      })
+    })
+  } catch (error) {
+    
+  }
+}
+
+exports.deleteBarangMasuk = async (req, res) => {
+  const id = req.params.id;
+  let sql = `DELETE FROM tb_barang_masuk WHERE id=${id}`;
+  let message = '';
+  try {
+    await Connection.query(sql, function(err, rows) {
+      if (err) throw err;
+      if(rows.affectedRows > 0){
+        message = 'Berhasil Hapus Data';
+      } else {
+        message = 'Gagal Hapus Data id tidak ditemukan';
+      }
+      
+      res.json({
+        status: 200,
+        message: message,
+      })
+    })
+  } catch (error) {
+    
+  }
+}
