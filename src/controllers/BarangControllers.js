@@ -1,18 +1,18 @@
 const Connection = require("../config/Connection");
 
-exports.getBarangMasuk = async (req, res) => {
+exports.getBarang = async (req, res) => {
   let jenisBarang = [];
   let message = "";
   // SELECT DISTINCT alamat FROM daftar_dosen ORDER BY alamat
   try {
     const sqlJenisBarang =
-      "SELECT DISTINCT jenis_barang FROM tb_barang_masuk ORDER BY jenis_barang";
+      "SELECT DISTINCT jenis_barang FROM tb_barang ORDER BY jenis_barang";
     await Connection.query(sqlJenisBarang, function (err, rows) {
       if (err) throw err;
       jenisBarang = rows;
     });
 
-    const sql = "SELECT * FROM tb_barang_masuk ORDER BY id DESC";
+    const sql = "SELECT * FROM tb_barang ORDER BY id_barang DESC";
     await Connection.query(sql, function (err, rows) {
       if (err) throw err;
       if (rows.length > 0) {
@@ -37,21 +37,26 @@ exports.getBarangMasuk = async (req, res) => {
   } catch (error) {}
 };
 
-exports.insertBarangMasuk = async (req, res) => {
-  
-  // const body = req.body;
-  // let id_barang = body.id_barang;
-  // let nama_barang = body.nama_barang;
-  // let jenis_barang = body.jenis_barang;
-  // let jml_barang_masuk = body.jml_barang_masuk;
+exports.insertBarang = async (req, res) => {
   try {
-    const {id_barang,nama_barang,jenis_barang,jml_barang_masuk} = req.body;
+    const { id_barang, nama_barang, jenis_barang, jml_stock } = req.body;
     let message = "";
-    let sql = "INSERT INTO tb_barang_masuk (id_barang, nama_barang, jenis_barang, jml_barang_masuk) VALUES (?, ?, ?, ?)";
-    let values = [id_barang, nama_barang, jenis_barang, jml_barang_masuk];
+    let sql =
+      "INSERT INTO tb_barang (id_barang, nama_barang, jenis_barang, jml_stock) VALUES (?, ?, ?, ?)";
+    let values = [id_barang, nama_barang, jenis_barang, jml_stock];
 
     await Connection.query(sql, values, (err, rows, fileds) => {
-      if (err) throw err;
+    //   if (err) throw err;
+      if (err) {
+        console.log("error: ", err);
+        // result(err, null);
+        res.json({
+            status: 201,
+            message: "Error Post",
+            Error: err.sqlMessage,
+          });
+        return;
+      }
       if (rows.affectedRows > 0) {
         message = "Data Berhasil ditambahkan";
       } else {
@@ -65,58 +70,11 @@ exports.insertBarangMasuk = async (req, res) => {
     });
   } catch (error) {
     console.log(`ERRORNYA: ${error}`);
+    if(err) {
+        res.json({
+            status: 200,
+            error: error,
+          });
+      }
   }
 };
-
-exports.editBarangMasuk = async(req, res) => {
-  const id = req.params.id;
-  const body = req.body;
-  let id_barang = body.id_barang;
-  let nama_barang = body.nama_barang;
-  let jenis_barang = body.jenis_barang;
-  let jml_barang_masuk = body.jml_barang_masuk;
-  let sql = `UPDATE tb_barang_masuk SET id_barang=?, nama_barang=?, jenis_barang=?, jml_barang_masuk=? WHERE id=${id}`;
-  let values = [id_barang, nama_barang, jenis_barang, jml_barang_masuk];
-  let message ='';
-
-  try {
-    Connection.query(sql, values, (err, rows, fileds) => {
-      if (err) throw err;
-      if(rows.affectedRows > 0) {
-        message = 'Data Berhasil diubah';
-      } else {
-        message = 'Data Gagal diubah';
-      }
-      res.json({
-        status: 200,
-        message: message,
-        data: req.body,
-      })
-    })
-  } catch (error) {
-    
-  }
-}
-
-exports.deleteBarangMasuk = async (req, res) => {
-  const id = req.params.id;
-  let sql = `DELETE FROM tb_barang_masuk WHERE id=${id}`;
-  let message = '';
-  try {
-    await Connection.query(sql, function(err, rows) {
-      if (err) throw err;
-      if(rows.affectedRows > 0){
-        message = 'Berhasil Hapus Data';
-      } else {
-        message = 'Gagal Hapus Data id tidak ditemukan';
-      }
-      
-      res.json({
-        status: 200,
-        message: message,
-      })
-    })
-  } catch (error) {
-    
-  }
-}

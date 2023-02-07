@@ -1,11 +1,15 @@
 const express = require("express");
+const BarangMasukControllers = require("../controllers/BarangMasukControllers");
 const BarangControllers = require("../controllers/BarangControllers");
 
 const Router = express.Router();
 
-Router.get('/barangmasuk', BarangControllers.getBarangMasuk);
-Router.post('/insertbarangmasuk', BarangControllers.insertBarangMasuk);
-Router.put('/editbarang/:id', BarangControllers.editBarangMasuk);
-Router.delete('/deletebarang/:id', BarangControllers.deleteBarangMasuk);
+Router.post('/insertBarang', BarangControllers.insertBarang);
+Router.get('/Barang', BarangControllers.getBarang);
+
+Router.get('/barangmasuk', BarangMasukControllers.getBarangMasuk);
+Router.post('/insertbarangmasuk', BarangMasukControllers.insertBarangMasuk);
+Router.put('/editbarangmasuk/:id', BarangMasukControllers.editBarangMasuk);
+Router.delete('/deletebarangmasuk/:id', BarangMasukControllers.deleteBarangMasuk);
 
 module.exports = Router;
