@@ -6,6 +6,8 @@ const Router = express.Router();
 
 Router.post('/insertBarang', BarangControllers.insertBarang);
 Router.get('/Barang', BarangControllers.getBarang);
+Router.get('/detailbarang/:id', BarangControllers.detailBarang);
+Router.delete('/deletebarang/:id', BarangControllers.deleteBarang);
 
 Router.get('/barangmasuk', BarangMasukControllers.getBarangMasuk);
 Router.post('/insertbarangmasuk', BarangMasukControllers.insertBarangMasuk);

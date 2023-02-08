@@ -3,7 +3,7 @@ const Connection = require("../config/Connection");
 exports.getBarang = async (req, res) => {
   let jenisBarang = [];
   let message = "";
-  // SELECT DISTINCT alamat FROM daftar_dosen ORDER BY alamat
+
   try {
     const sqlJenisBarang =
       "SELECT DISTINCT jenis_barang FROM tb_barang ORDER BY jenis_barang";
@@ -46,15 +46,14 @@ exports.insertBarang = async (req, res) => {
     let values = [id_barang, nama_barang, jenis_barang, jml_stock];
 
     await Connection.query(sql, values, (err, rows, fileds) => {
-    //   if (err) throw err;
+      if (err) throw err;
       if (err) {
         console.log("error: ", err);
-        // result(err, null);
         res.json({
-            status: 201,
-            message: "Error Post",
-            Error: err.sqlMessage,
-          });
+          status: 400,
+          message: "Error Post",
+          Error: err.sqlMessage,
+        });
         return;
       }
       if (rows.affectedRows > 0) {
@@ -70,11 +69,76 @@ exports.insertBarang = async (req, res) => {
     });
   } catch (error) {
     console.log(`ERRORNYA: ${error}`);
-    if(err) {
+  }
+};
+
+exports.deleteBarang = async (req, res) => {
+  try {
+    const id = req.params.id;
+    let message = "";
+    let sql = `DELETE FROM tb_barang WHERE id_barang LIKE '${id}'`;
+
+    await Connection.query(sql, function (err, rows, fileds) {
+      if (err) throw err;
+      if (err) {
+        console.log(`ERRORNYA: ${err}`);
         res.json({
-            status: 200,
-            error: error,
-          });
+          status: 400,
+          message: "ERROR Request",
+          error: err.sqlMessage,
+        });
       }
+
+      if (rows.affectedRows > 0) {
+        message = "Data Berhasil Dihapus";
+      } else {
+        message = `Data Tidak Ada`;
+      }
+
+      res.json({
+        status: 200,
+        message: message,
+      });
+    });
+  } catch (error) {
+    console.log(`ERRORNYA: ${error}`);
+  }
+};
+
+exports.detailBarang = async (req, res) => {
+  try {
+    let id = req.params.id;
+    let message = "";
+    let sql = `SELECT * FROM tb_barang WHERE id_barang LIKE '${id}'`;
+
+    Connection.query(sql, function (err, rows, fileds) {
+      if (err) throw err;
+      if (err) {
+        console.log(`ERRORNYA: ${err}`);
+        res.json({
+          status: 400,
+          message: "Data Tidak Tersedia",
+          error: err.sqlMessage,
+        });
+      }
+      if (rows.lenght > 0) {
+        message = "Data Tersedia";
+      } else {
+        message = "Data Tidak Tersedia";
+      }
+
+      res.json({
+        status: 200,
+        message: message,
+        data: rows,
+      });
+    });
+  } catch (error) {
+    console.log(`ERRORNYA: ${error}`);
+    let err = error;
+    res.json({
+      status: 400,
+      message: `Error: ${error}`,
+    });
   }
 };
