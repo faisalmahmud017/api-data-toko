@@ -105,6 +105,36 @@ exports.deleteBarang = async (req, res) => {
   }
 };
 
+exports.editBarang = async(req, res) => {
+  const id = req.params.id;
+  const body = req.body;
+  let id_barang = body.id_barang;
+  let nama_barang = body.nama_barang;
+  let jenis_barang = body.jenis_barang;
+  let jml_stock = body.jml_barang_masuk;
+  let sql = `UPDATE tb_barang SET id_barang=?, nama_barang=?, jenis_barang=?, jml_stock=? WHERE id=${id}`;
+  let values = [id_barang, nama_barang, jenis_barang, jml_stock];
+  let message ='';
+
+  try {
+    Connection.query(sql, values, (err, rows, fileds) => {
+      if (err) throw err;
+      if(rows.affectedRows > 0) {
+        message = 'Data Berhasil diubah';
+      } else {
+        message = 'Data Gagal diubah';
+      }
+      res.json({
+        status: 200,
+        message: message,
+        data: req.body,
+      })
+    })
+  } catch (error) {
+    
+  }
+}
+
 exports.detailBarang = async (req, res) => {
   try {
     let id = req.params.id;

@@ -120,3 +120,41 @@ exports.deleteBarangMasuk = async (req, res) => {
     
   }
 }
+
+exports.detailBarangMasuk = async (req, res) => {
+  try {
+    let id = req.params.id;
+    let message = "";
+    let sql = `SELECT * FROM tb_barang_masuk WHERE id LIKE '${id}'`;
+
+    Connection.query(sql, function (err, rows, fileds) {
+      if (err) throw err;
+      if (err) {
+        console.log(`ERRORNYA: ${err}`);
+        res.json({
+          status: 400,
+          message: "Data Tidak Tersedia",
+          error: err.sqlMessage,
+        });
+      }
+      if (rows.lenght > 0) {
+        message = "Data Tersedia";
+      } else {
+        message = "Data Tidak Tersedia";
+      }
+
+      res.json({
+        status: 200,
+        message: message,
+        data: rows,
+      });
+    });
+  } catch (error) {
+    console.log(`ERRORNYA: ${error}`);
+    let err = error;
+    res.json({
+      status: 400,
+      message: `Error: ${error}`,
+    });
+  }
+};
