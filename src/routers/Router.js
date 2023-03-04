@@ -5,18 +5,20 @@ const UserController = require("../controllers/UserControllers")
 
 const Router = express.Router();
 
+Router.post('/tes-login', UserController.tesLoginUser);
 Router.post('/login', UserController.loginUser);
+Router.post('/register', UserController.registerUser);
 
-Router.post('/insertBarang', BarangControllers.insertBarang);
 Router.get('/Barang', BarangControllers.getBarang);
-Router.get('/detailbarang/:id', BarangControllers.detailBarang);
-Router.delete('/deletebarang/:id', BarangControllers.deleteBarang);
-Router.delete('/editbarang/:id', BarangControllers.editBarang);
+Router.post('/insert-Barang', BarangControllers.insertBarang);
+Router.get('/detail-barang/:id', BarangControllers.detailBarang);
+Router.delete('/delete-barang/:id', BarangControllers.deleteBarang);
+Router.delete('/edit-barang/:id', BarangControllers.editBarang);
 
 Router.get('/barangmasuk', BarangMasukControllers.getBarangMasuk);
-Router.post('/insertbarangmasuk', BarangMasukControllers.insertBarangMasuk);
-Router.put('/editbarangmasuk/:id', BarangMasukControllers.editBarangMasuk);
-Router.delete('/deletebarangmasuk/:id', BarangMasukControllers.deleteBarangMasuk);
-Router.delete('/detailbarangmasuk/:id', BarangMasukControllers.detailBarangMasuk);
+Router.post('/insert-barang-masuk', BarangMasukControllers.insertBarangMasuk);
+Router.put('/edit-barang-masuk/:id', BarangMasukControllers.editBarangMasuk);
+Router.delete('/delete-barang-masuk/:id', BarangMasukControllers.deleteBarangMasuk);
+Router.delete('/detail-barang-masuk/:id', BarangMasukControllers.detailBarangMasuk);
 
 module.exports = Router;
